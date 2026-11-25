@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripNest — Hackathon Presentation Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #173a2e;
+      --green-dark: #10251f;
+      --mint: #dce8dc;
+      --paper: #f7f7f2;
+      --ink: #19251f;
+      --muted: #667369;
+      --line: #dfe4dc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: #0d1d18;
+      color: var(--ink);
+      overflow: hidden;
+    }
+    .deck-viewport {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .slide {
+      display: none;
+      width: min(100%, 1180px);
+      aspect-ratio: 16 / 9;
+      background: var(--paper);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+      padding: 56px 68px;
+      position: relative;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .slide.active { display: flex; }
+    .slide.dark {
+      background: var(--green);
+      color: #fff;
+    }
+    .slide.dark::before {
+      content: 'T';
+      position: absolute;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 560px;
+      color: rgba(255, 255, 255, 0.03);
+      right: 4%;
+      top: -130px;
+      pointer-events: none;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.2px;
+      font-weight: 700;
+      color: #6b806e;
+      text-transform: uppercase;
+    }
+    .slide.dark .eyebrow { color: #b6cbb8; }
+    h1, h2 {
+      font-weight: 500;
+      letter-spacing: -1.8px;
+      margin: 12px 0 0;
+      line-height: 1.06;
+    }
+    h1 { font-size: clamp(44px, 5vw, 68px); }
+    h2 { font-size: clamp(32px, 3.6vw, 48px); }
+    em {
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+    }
+    .lead {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 780px;
+      margin: 18px 0 0;
+    }
+    .slide.dark .lead { color: #c7d4c9; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 22px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 22px 24px;
+    }
+    .slide.dark .card {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+    .card-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #4b7056;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .slide.dark .card-num { color: #a7c393; }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+    .card p, .card li {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .slide.dark .card p, .slide.dark .card li { color: #c8d5ca; }
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .pill {
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      color: #e4ede4;
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      color: #7c877e;
+    }
+    .slide.dark .slide-footer {
+      border-top-color: rgba(255, 255, 255, 0.15);
+      color: #9cb2a0;
+    }
+    .controls {
+      position: fixed;
+      bottom: 18px;
+      right: 24px;
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+    }
+    .controls button {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(16, 37, 31, 0.9);
+      color: #fff;
+      padding: 9px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .controls button:hover { background: #265442; }
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #9bb894;
+      transition: width 0.25s;
+      z-index: 30;
+    }
+    .line-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin-top: 34px;
+      padding-top: 28px;
+    }
+    .line-track::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 2%;
+      right: 2%;
+      height: 2px;
+      background: #b8c9bc;
+    }
+    .line-node {
+      position: relative;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 16px 14px;
+    }
+    .line-node::before {
+      content: '';
+      position: absolute;
+      top: -25px;
+      left: 16px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 3px solid var(--paper);
+    }
+    .line-node span {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #4b7056;
+      margin-bottom: 6px;
+    }
+    .line-node strong {
+      display: block;
+      font-size: 13px;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .line-node p {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    @media print {
+      body { background: #fff; overflow: visible; }
+      .deck-viewport { display: block; padding: 0; }
+      .slide {
+        display: flex !important;
+        width: 100%;
+        height: 100vh;
+        box-shadow: none;
+        page-break-after: always;
+      }
+      .controls, .progress-bar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progress"></div>
+  <div class="deck-viewport">
+
+    <!-- Slide 1 -->
+    <section class="slide dark active">
+      <div>
+        <div class="eyebrow">HACKATHON PROJECT PRESENTATION</div>
+        <h1>TripNest — <em>Travel,<br />beautifully planned.</em></h1>
+        <p class="lead">
+          An editorial-grade travel booking, smart itinerary matching, group bill-splitting, and agency operations platform built with React &amp; Vite.
+        </p>
+        <div class="pill-row">
+          <span class="pill">React 18 + Vite 5</span>
+          <span class="pill">TripVibe Smart Matcher</span>
+          <span class="pill">Group Split-Bill &amp; E-Tickets</span>
+          <span class="pill">Admin Command Center</span>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · CURATED JOURNEYS</span>
+        <span>01 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 2: All Features Line Slide -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">01 · END-TO-END FEATURE PIPELINE</div>
+        <h2>Every feature in one <em>connected flow.</em></h2>
+        <p class="lead">From pre-trip personalization and economy transit routing to checkout splitting and agency management.</p>
+        <div class="line-track">
+          <div class="line-node">
+            <span>01 · PRESET</span>
+            <strong>Saved Profile</strong>
+            <p>Save pace, budget &amp; transit hub before trip; auto-ranks best matches.</p>
+          </div>
+          <div class="line-node">
+            <span>02 · FILTER</span>
+            <strong>Sidebar Studio</strong>
+            <p>Filter every place by budget slider, category, pace &amp; transit hub.</p>
+          </div>
+          <div class="line-node">
+            <span>03 · TRANSIT</span>
+            <strong>Economy Routes</strong>
+            <p>Best budget mode + Airport, Railway &amp; Bus fast/economy routes.</p>
+          </div>
+          <div class="line-node">
+            <span>04 · MATCH</span>
+            <strong>Vibe &amp; Compare</strong>
+            <p>3-step TripVibe quiz + side-by-side 3-way journey comparison.</p>
+          </div>
+          <div class="line-node">
+            <span>05 · BOOK</span>
+            <strong>Split &amp; E-Ticket</strong>
+            <p>Add-ons, promos, live per-person split &amp; printable packing pass.</p>
+          </div>
+          <div class="line-node">
+            <span>06 · ADMIN</span>
+            <strong>Command Center</strong>
+            <p>Revenue KPIs, category chart, package studio &amp; concierge leads.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · FEATURE LINE</span>
+        <span>02 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">01 · ABSTRACT</div>
+        <h2>Redefining how travellers <em>discover &amp; book.</em></h2>
+        <p class="lead">
+          TripNest replaces cluttered travel aggregators with a calm, high-trust digital travel concierge. It unifies mood-based destination matching, side-by-side comparison, transparent group pricing, instant printable E-Tickets with packing checklists, and a real-time agency admin command center.
+        </p>
+        <div class="grid-3">
+          <div class="card">
+            <span class="card-num">01</span>
+            <h3>Smart Discovery</h3>
+            <p>8 curated journeys, live search, category filters, and a 3-step TripVibe Matcher quiz.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">02</span>
+            <h3>Transparent Checkout</h3>
+            <p>Experience upgrades, promo validation, and automatic per-person split calculation.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">03</span>
+            <h3>Agency Operations</h3>
+            <p>Confirmed revenue KPIs, package studio with live preview, and concierge lead tracking.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · ABSTRACT</span>
+        <span>03 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">02 · PROBLEM STATEMENT</div>
+        <h2>Why modern trip planning <em>feels broken.</em></h2>
+        <div class="grid-4">
+          <div class="card">
+            <span class="card-num">01</span>
+            <h3>Decision Fatigue</h3>
+            <p>Travellers face overwhelming listings with no mood-based matching or side-by-side comparison.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">02</span>
+            <h3>Group Cost Friction</h3>
+            <p>Existing portals rarely calculate per-person splits dynamically after add-ons and promo discounts.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">03</span>
+            <h3>Disconnected Post-Booking</h3>
+            <p>Passes, cancellation controls, and destination-specific packing prep live in separate apps.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">04</span>
+            <h3>Fragmented Admin Tools</h3>
+            <p>Boutique agencies lack a unified view for revenue KPIs, package publishing, and custom leads.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · PROBLEM STATEMENT</span>
+        <span>04 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">03 · OBJECTIVES</div>
+        <h2>Designed around four <em>core goals.</em></h2>
+        <div class="grid-4">
+          <div class="card">
+            <h3>Personalize Discovery</h3>
+            <p>Match travellers to ideal destinations in under 15 seconds using pace, landscape, and budget preferences.</p>
+          </div>
+          <div class="card">
+            <h3>Guarantee Price Clarity</h3>
+            <p>Show live itemized breakdowns, promo code savings, optional upgrades, and per-person splits before checkout.</p>
+          </div>
+          <div class="card">
+            <h3>Deliver Instant Self-Service</h3>
+            <p>Provide printable E-Tickets, smart packing checklists, wishlists, and one-click pending cancellations.</p>
+          </div>
+          <div class="card">
+            <h3>Empower Agency Control</h3>
+            <p>Give admins real-time revenue metrics, booking status workflows, and a live Package Studio.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · OBJECTIVES</span>
+        <span>05 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">04 · ARCHITECTURE &amp; TECH STACK</div>
+        <h2>Fast, modular, and <em>zero-latency.</em></h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Frontend &amp; Routing</h3>
+            <ul>
+              <li><strong>React 18:</strong> Component-driven UI with Context API (<code>AuthContext</code>) and custom hooks</li>
+              <li><strong>React Router v6:</strong> Role-protected routes (<code>/user</code>, <code>/admin</code>) via <code>ProtectedRoute</code></li>
+              <li><strong>Vite 5:</strong> Instant HMR dev server &amp; optimized production bundling</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Data &amp; Design System</h3>
+            <ul>
+              <li><strong>Reactive Store (<code>storage.js</code>):</strong> <code>localStorage</code> persistence with in-memory fallback &amp; cross-tab event sync</li>
+              <li><strong>Editorial UI:</strong> <code>Playfair Display</code> + <code>DM Sans</code>, custom SVG icon library, <code>@media print</code> E-Tickets</li>
+              <li><strong>Zero External Bloat:</strong> Pure CSS charts, modals, and state transitions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · ARCHITECTURE</span>
+        <span>06 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide dark">
+      <div>
+        <div class="eyebrow">05 · UNIQUE INNOVATIONS</div>
+        <h2>Features that set <em>TripNest apart.</em></h2>
+        <div class="grid-4">
+          <div class="card">
+            <span class="card-num">01</span>
+            <h3>TripVibe Smart Matcher</h3>
+            <p>3-step interactive mood quiz that scores all packages in real time and surfaces % Match recommendations.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">02</span>
+            <h3>Side-by-Side Compare</h3>
+            <p>Floating comparison dock to evaluate up to 3 journeys across price, duration, pace, rating, and highlights.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">03</span>
+            <h3>Group Split-Bill + Upgrades</h3>
+            <p>Live per-person split badge with optional VIP transfers, photography, Travel Shield, and promo codes.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">04</span>
+            <h3>Smart Packing Checklist</h3>
+            <p>Each E-Ticket generates a destination-category checklist saved per booking in local storage.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · UNIQUE FEATURES</span>
+        <span>07 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">06 · ROLE-BASED MODULES</div>
+        <h2>Tailored workspaces for <em>travellers &amp; admins.</em></h2>
+        <div class="grid-2">
+          <div class="card">
+            <span class="card-num">Traveller</span>
+            <h3>User Dashboard (/user)</h3>
+            <ul>
+              <li>4 KPI cards: Bookings, Confirmed Trips, Wishlist, Travel Value</li>
+              <li>Tabbed workspace: Bookings, Explore, Wishlist, Custom Requests</li>
+              <li>View &amp; print E-Tickets with packing checklists</li>
+              <li>One-click cancellation for Pending bookings</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="card-num">Agency</span>
+            <h3>Admin Command Center (/admin)</h3>
+            <ul>
+              <li>5 KPIs including live Confirmed Revenue (₹)</li>
+              <li>Category Mix bar chart &amp; searchable booking filters</li>
+              <li>Package Studio with live cover preview &amp; safe delete modal</li>
+              <li>Concierge Inquiries pipeline (New → In Progress → Quoted)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · MODULES</span>
+        <span>08 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">07 · LIVE DEMO FLOW</div>
+        <h2>End-to-end journey in <em>90 seconds.</em></h2>
+        <div class="grid-4">
+          <div class="card">
+            <span class="card-num">Step 1</span>
+            <h3>Discover &amp; Match</h3>
+            <p>Cycle the Hero Carousel, run TripVibe Matcher, and compare 2 packages side-by-side.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">Step 2</span>
+            <h3>Book &amp; Split</h3>
+            <p>Inspect itinerary &amp; reviews, add VIP Transfer, apply <code>HACK20</code>, and view live Split / person.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">Step 3</span>
+            <h3>E-Ticket &amp; Pack</h3>
+            <p>Generate the printable E-Ticket pass and check off items in the Smart Packing Checklist.</p>
+          </div>
+          <div class="card">
+            <span class="card-num">Step 4</span>
+            <h3>Admin Approval</h3>
+            <p>Switch via 1-click Admin Demo, confirm the booking, and watch Confirmed Revenue update live.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · DEMO WALKTHROUGH</span>
+        <span>09 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide">
+      <div>
+        <div class="eyebrow">08 · FUTURE SCOPE</div>
+        <h2>Scaling beyond <em>the hackathon.</em></h2>
+        <div class="grid-4">
+          <div class="card">
+            <h3>Cloud Backend &amp; Payments</h3>
+            <p>Node.js/PostgreSQL API with Razorpay/Stripe webhooks for live multi-user transactions.</p>
+          </div>
+          <div class="card">
+            <h3>AI Itinerary Co-Pilot</h3>
+            <p>Generate custom day-by-day plans automatically from Bespoke Concierge requests.</p>
+          </div>
+          <div class="card">
+            <h3>Live Maps &amp; Weather</h3>
+            <p>Embed interactive route maps and 7-day destination forecasts inside Tour Details.</p>
+          </div>
+          <div class="card">
+            <h3>Automated Notifications</h3>
+            <p>WhatsApp &amp; email delivery for E-Tickets, status updates, and packing reminders.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · FUTURE ROADMAP</span>
+        <span>10 / 11</span>
+      </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide dark">
+      <div>
+        <div class="eyebrow">09 · CONCLUSION</div>
+        <h1>Thank you.<br /><em>Questions &amp; Live Demo.</em></h1>
+        <p class="lead">
+          TripNest brings editorial luxury, transparent group pricing, and operational clarity together in one cohesive travel platform.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Promo Codes: NEST10 · HACK20 · FIRST500</span>
+          <span class="pill">One-Click Traveller &amp; Admin Demo</span>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>TRIPNEST · TRAVEL, BEAUTIFULLY PLANNED</span>
+        <span>11 / 11</span>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="controls">
+    <button type="button" onclick="prevSlide()">← Prev</button>
+    <button type="button" onclick="nextSlide()">Next →</button>
+    <button type="button" onclick="window.print()">Save PDF</button>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.getElementById('progress');
+    let current = 0;
+
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((s, i) => s.classList.toggle('active', i === current));
+      progress.style.width = (((current + 1) / slides.length) * 100) + '%';
+    }
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+    showSlide(0);
+  </script>
+</body>
+</html>
